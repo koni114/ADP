@@ -22,7 +22,7 @@
 > <b>일괄(Batch) ETL</b>과 <b>실시간(Real Time) ETL</b>로 구분  
 
 ### * ODC와 데이터 웨어하우스 개념도
-> ![img](C://데이터분석자료/ADP준비자료/ODC.jpg)
+> ![img](https://github.com/koni114/ADP/blob/master/ODC.jpg)
 
 > * Step 0 interface : 다양한 이기종 DBMS 및 스프레드시트 등 데이터 원천(Source)으로부터 데이터를 획득하기 위한 인터페이스 매커니즘 구현  
 

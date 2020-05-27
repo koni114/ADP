@@ -142,7 +142,7 @@
 > 높은 수준의 폴트톨러런스가 가능. 하나의 노드만 살아있어도 서비스가 가능  
 > Oracle RAC가 공유 디스크 방식을 채택하고 있음  
 
-> ##### * Oracle RAC DB 서버  
+##### * Oracle RAC DB 서버  
 > * Oracle DB 서버는 클러스터의 모든 노드에서 실행  
 
 > * Data는 공유 스토리지에 저장  
@@ -161,7 +161,7 @@
 
 > * 하드웨어 비용 절감  
 
->  ##### * IBM DB2 ICE(Integrated Cluster Environment)  
+##### * IBM DB2 ICE(Integrated Cluster Environment)  
 >
 > * CPU, 메모리, 디스크를 파티션별로 독립적으로 운영하는 무공유 방식의 클러스터링 지원  
 
@@ -175,7 +175,7 @@
 
 > * 따라서 DB2를 이용하여 클러스터를 구성할 때에도 가용성을 보장하기 위해 공유 디스크 방식 이용  
 
-> ##### * MicroSoft SQL Server
+##### * MicroSoft SQL Server
 
 > * 연합 DB 형태로, 여러 노드로 확장할 수 있는 기능을 제공  
 

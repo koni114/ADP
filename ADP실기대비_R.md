@@ -1,15 +1,21 @@
 ## ADP 실기 대비 - R programming 준비
 
 ### Data preprocessing
-- 데이터 불러오기
+- 데이터 불러오기          : JB_LoadingData.R
   - excel
   - csv
   - tab
   - txt
-- 변수 타입 설정
-  - timestamp 변환
-- 데이터 통합
-- rowise, columize 
+- 데이터 저장하기          : JB_SavingData.R
+- 변수 타입 설정           : JB_chgColType.R
+  - dplyr을 이용한 변수 타입 변환
+  - 날짜형 변환 --> timestamp 변환
+  - 범주형 변환
+  - 수치형 변환
+  - 문자형 변환
+
+- 데이터 통합              : JB_itgrtData.R
+- 데이터 pivoting     
 - 데이터 분할
 - 정규표현식 정리
   - 특수문자 제거 방법
@@ -49,6 +55,7 @@
 - 영향인자탐지(수치형, 범주형)
 - 등분산검정
 - 교호작용 인자탐지
+- 범주형 유의차 분석(카이제곱검정, 독립성검정)
 
 ### modeling
 

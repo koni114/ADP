@@ -15,14 +15,33 @@
   - 문자형 변환
 
 - 데이터 통합              : JB_itgrtData.R
-- 데이터 pivoting     
-- 데이터 분할
-- 정규표현식 정리
+- 데이터 pivoting          : JB_pivotData.R
+
+- 데이터 분할              : JB_splitData.R
+- 정규표현식 정리           
   - 특수문자 제거 방법
-- data parsing
-- 결측치 처리
-- 이상치 처리
-- 데이터 정렬
+- 결측치 처리              : JB_treatNa.R
+  - 행 제거
+  - 열 제거
+  - 결측치 대체
+    - 평균 값
+    - 이전 값
+    - 임의 값
+    - 중앙 값
+
+
+- 이상치 처리               : JB_treatOutlier.R
+  이상치 Rule
+  - IQR
+  - 백분위수
+   
+  이상치 대체 값
+  - NA
+  - min/max
+  - 제거
+
+
+- 데이터 정렬                : JB_treatOutlier.R
 - 데이터 윈도우
 - 데이터 시프트
 - 데이터 샘플링

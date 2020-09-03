@@ -41,20 +41,21 @@
   - 제거
 
 
-- 데이터 정렬                : JB_treatOutlier.R
-- 데이터 윈도우
-- 데이터 시프트
-- 데이터 샘플링
-- 데이터 표준화
-- 파생변수 생성
-
+- 데이터 정렬                : JB_orderByData.R
+- 데이터 윈도우              : JB_windowData.R
+- 데이터 시프트              : JB_shiftData.R
+- 데이터 샘플링              : JB_samplingData.R
+- 데이터 표준화              : JB_stdData.R
+  - 01 변환
+  - scale 변환
+- 데이터 인코딩              : JB_encodingData.R
 ### EDA + Visualiztion
-- 자료 요약(통계)
+- 자료 요약(통계)            : JB_summary.R 
   - 수치형
   - 문자형
   - 날짜형
   - 범주형
-- 산점도
+- 산점도                     : JB_ScatterPlot.R
 - 산점도 행렬
 - Time Trend
 - 파이차트

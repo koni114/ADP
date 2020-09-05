@@ -55,9 +55,10 @@
   - 문자형
   - 날짜형
   - 범주형
+- ggplot2 기본 기능 익히기   : JB_ggpplot2.R
 - 산점도                     : JB_ScatterPlot.R
-- 산점도 행렬
-- Time Trend
+- 산점도 행렬                  
+- Time Trend                 : JB_timeTrend.R
 - 파이차트
 - 밀도함수
 - 막대그래프

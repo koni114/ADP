@@ -42,3 +42,21 @@ mid   <- nrow(iris) * 0.7
 train <- iris[seq(from = 0, to = mid),] 
 test  <- iris[seq(from = mid+1, to = nrow(iris)), ]
 
+## 5. over sampling
+
+
+
+## 6. under sampling
+
+## 7. SMOTE sampling
+DMwR::SMOTE(
+  form,             # 모델 포뮬러
+  data,             # 포뮬러를 적용할 데이터
+  perc.over=200,    # 적은 쪽의 데이터를 얼마나 추가로 샘플링해야 하는지?
+                    # 적은 쪽의 데이터 한 개당 perc.over/100개의 추가 데이터가 생성되어 샘플링됨
+  k=5,              # 고려할 최근접 이웃의 수
+                    # 적은 쪽의 데이터를 추가로 샘플링할 때 각 샘플에 대응해서 많은 쪽의 데이터를
+                    # 얼마나 샘플링할지 지정
+  perc.under=200
+)
+

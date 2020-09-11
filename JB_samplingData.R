@@ -29,11 +29,49 @@ samp <- data.table(sampling::strata(
                           , data = d.t)
                    )
 
+# 1.3 sampling::strata function
+sampling::strata(
+  data,  # data.frame 또는 vector
+  stratanames = NULL, # 층화 추출에 사용할 변수들, 다수의 층을 적용할 수 있음
+  size, # 각 층의 크기
+  # method는 데이터를 추출하는 방법으로, 다음 4가지 중 하나로 지정한다
+  # - srswor   : 비복원 단순 임의 추출
+  # - srswr    : 복원 단순 임의 추출
+  # - poisson  : 포아송 추출
+  # - sysmatic : 계통 추출
+  pik, # 각 데이터를 표본에 포함할 확률
+  description = F # T면 표본의 크기와 모집단의 크기를 출력
+)
+
+# 해당 표본 dataFrame을 기준으로 실제 데이터를 sampling 해오는 함수
+sampling::getdata(
+  data,
+  m  # 선택된 유닛에 대한 벡터 또는 표본 데이터 프레임
+)
+
+library(sampling)
+x <- sampling::strata(c("Species")
+                      , size   = c(3,3,3) # 종별로 3개씩 추출, 값을 다르게 주면 다르게 추출 가능
+                      , method = 'srswor', data = iris)
+sampling::getdata(iris, x)
+
 
 ## 3. 계통추출 ----
 ## +3, +3, +3...
 library(doBy)
-doBy::sampleBy(~1, frac = .3, data = iris, systematic = T)
+
+doBy::sampleBy(
+  formula,
+  frac = 0.1, # 계통 추출 시 반복할 비율 : 데이터의 개수  * frac 만큼 반복을 돌려 index 추출
+  replace = F,
+  data = parent.frame(), 
+  systematic = F
+)
+
+x <- data.frame(x = 1:10)
+doBy::sampleBy(~1, frac = 0.3, data = x, systematic = T)
+
+
 
 
 ## 4. 시계열추출 ----
@@ -41,22 +79,4 @@ doBy::sampleBy(~1, frac = .3, data = iris, systematic = T)
 mid   <- nrow(iris) * 0.7
 train <- iris[seq(from = 0, to = mid),] 
 test  <- iris[seq(from = mid+1, to = nrow(iris)), ]
-
-## 5. over sampling
-
-
-
-## 6. under sampling
-
-## 7. SMOTE sampling
-DMwR::SMOTE(
-  form,             # 모델 포뮬러
-  data,             # 포뮬러를 적용할 데이터
-  perc.over = 200,    # 적은 쪽의 데이터를 얼마나 추가로 샘플링해야 하는지?
-                    # 적은 쪽의 데이터 한 개당 perc.over/100개의 추가 데이터가 생성되어 샘플링됨
-  k=5,              # 고려할 최근접 이웃의 수
-                    # 적은 쪽의 데이터를 추가로 샘플링할 때 각 샘플에 대응해서 많은 쪽의 데이터를
-                    # 얼마나 샘플링할지 지정
-  perc.under = 100
-)
 

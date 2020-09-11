@@ -70,8 +70,8 @@
 - 히트맵
 
 ### Statistics 
-- 정규성 검정
-- 상관분석
+- 정규성 검정 : JB_normalTest.R
+- 상관분석    : JB_corTest.R
 - 분산분석
 - 평균 유의차 분석
 

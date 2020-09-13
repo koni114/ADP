@@ -37,3 +37,26 @@ titanic_treatMean <- titanic %>% mutate_all(~ifelse(is.na(.x), 10, .x))
 
 # 7. 중앙 값
 titanic_treatMean <- titanic %>% mutate_all(~ifelse(is.na(.x), median(.x, na.rm = T), .x))
+
+
+# DMwR::centrallnputation
+# NA를 가운데 값으로 대체
+# 숫자의 경우 중앙값, 팩터의 경우 최빈값
+library(DMwR)
+DMwR::centralImputation(
+  data, # 데이터 프레임
+)
+
+# DMwR::knnImputation
+# NA를 k 최근 이웃 분류 알고리즘을 사용해 대체
+# 데이터 정규화는 자동으로 수행
+DMwR::knnImputation(
+  data, # 데이터 프레임
+  k,    # 몇개의 이웃을 볼 것인가 확인
+)
+
+
+
+
+
+

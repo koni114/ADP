@@ -73,10 +73,10 @@
 - 정규성 검정 : JB_normalTest.R
 - 상관분석    : JB_corTest.R
 - 분산분석
-- 평균 유의차 분석
+- 평균 유의차 분석 : JB_meanDiffer.R
 
 - 영향인자탐지(수치형, 범주형)
-- 등분산검정
+- 등분산검정 : JB_varTest.R
 - 교호작용 인자탐지
 - 범주형 유의차 분석(카이제곱검정, 독립성검정)
 
@@ -95,22 +95,21 @@
 - random Forest
 - xgboost
 
+#### Common Model
+- 의사결정나무 모형
+- 신경망 모형
 
 #### prediction Model
 - 회귀분석
-  - Linear 회귀분석
+  - Linear 회귀분석   : JB_LinearRM.R
   - Ridge 회귀분석
   - Lasso 회귀분석
   - elastic 회귀분석
-- 의사결정나무 모형
 - 시계열 예측
-- 신경망 모형
 - SVM
 
 #### Classification Model
 - 로지스틱 회귀모형
-- 신경망 모형
-- 의사결정나무 모형
 - SVM
 
 ### evaluation

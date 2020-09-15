@@ -113,7 +113,4 @@
 - SVM
 
 ### evaluation
-- confusion matrix
-- ROC Curve
-- 이익도표와 향상도 곡선
-- RMSE
+- 모델 평가 방법, 교차검증 : JB_evaluation.R 

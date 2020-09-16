@@ -72,41 +72,40 @@
 ### Statistics 
 - 정규성 검정 : JB_normalTest.R
 - 상관분석    : JB_corTest.R
-- 분산분석
+- 분산분석    : JB_anova.R
 - 평균 유의차 분석 : JB_meanDiffer.R
-
-- 영향인자탐지(수치형, 범주형)
-- 등분산검정 : JB_varTest.R
-- 교호작용 인자탐지
-- 범주형 유의차 분석(카이제곱검정, 독립성검정)
+- 등분산검정                   : JB_varTest.R
+- 교호작용 인자탐지            : JB_interaction.R
+- 범주형 분석(분할표 작성, 카이제곱검정, 피셔의정확검정, 맥니마검정, 독립성검정) : 
 
 ### modeling
 
 #### unsupervised Model
-- 주성분분석
+- 주성분분석        : 
 - 군집분석          : JB_clustering.R
   - 계층적 군집분석
   - k-평균 군집분석
 
 
 #### assemble Model
+JB_assemble.R
 - bagging
 - boosting
 - random Forest
 - xgboost
 
 #### Common Model
-- 의사결정나무 모형
+- 의사결정나무 모형   
 - 신경망 모형
 
 #### prediction Model
 - 회귀분석
-  - Linear 회귀분석   : JB_LinearRM.R
-  - Ridge 회귀분석
-  - Lasso 회귀분석
-  - elastic 회귀분석
-- 시계열 예측
-- SVM
+  - Linear 회귀분석   
+  - Ridge 회귀분석     
+  - Lasso 회귀분석    
+  - elastic 회귀분석  
+- 시계열 예측         
+- SVM                 
 
 #### Classification Model
 - 로지스틱 회귀모형
@@ -114,3 +113,7 @@
 
 ### evaluation
 - 모델 평가 방법, 교차검증 : JB_evaluation.R 
+
+
+### package 별 정리
+caret package : caret.R

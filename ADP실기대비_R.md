@@ -81,7 +81,7 @@
 ### modeling
 
 #### unsupervised Model
-- 주성분분석        : 
+- 주성분분석        : JB_pca.R
 - 군집분석          : JB_clustering.R
   - 계층적 군집분석
   - k-평균 군집분석

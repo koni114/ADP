@@ -1,6 +1,49 @@
 ###########################
 ## chapter 08. 선형 회귀 ##
 ###########################
+# 선형회귀
+# 01. 단순선형회귀
+# - 모델확인
+# - 회귀 계수 coef(m)
+# - 적합된 값 fitted(m)
+# - 잔차 residual(m)
+# - 회귀 계수의 신뢰 구간  confint(m)
+# - 잔차 제곱 합 deviance(m)
+# - 예측과 신뢰 구간 predict 
+# - 모델평가 : summary(m)
+# - 결정계수 R 
+# - 조정결정계수
+# - 설명변수평가
+# - F통계량
+# - ANOVA를 통한 모델 간 비교 : anova(m)
+
+# 02. 모델 진단 그래프 
+# - Residual vs Fitted
+# - Normal Q-Q
+# - Scale - Location
+# - Residuals vs Leverage
+# - Cook's distance
+# - Cook's dist vs Leverage h(ij) / (1 - h(ij)) 
+# - 회귀 직선의 시각화
+ 
+# 03. 중 선형회귀
+# - 모델 생성 및 평가
+# - 중선형 회귀 모델의 시각화
+# - 표현식을 위한 I()의 사용
+# - 변수의 변환
+# - 상호 작용(interaction)
+# - 상호 작용 시각화 함수
+
+# 04. 이상치
+# - 외면 스튜던트화 잔차 : rstudent(model)
+# - 본페로니 이상값 검정 
+
+# 05. 변수선택
+# - 변수선택법(전진선택법, 변수소거법, 단계적방법)
+# - 모든경우탐색 : leaps::regsubsets function
+
+# 06. 다중공선성 진단
+# - car::vif(model)
 
 ############################ 
 # 1. 선형 회귀의 기본 가정 #
@@ -21,29 +64,32 @@ lm(
   data
 )
 
-# 예시를 통한 회귀 모형 수행
+# 1. 모형 생성
+# lm function 
 m <- lm(dist ~ speed, data = cars)
 
-# ** 선형 회귀 결과 추출
+# 선형 회귀 결과 추출
 # - 회귀 식 : y(dist) = -17.579 + 3.932 * x
 
-# 2. 회귀 계수: coef(model)
+# 2. 회귀 계수
+# coef(model) function
 coef(m) # 절편 : -17.57.. , 계수 : 3.932409
 
-# 3. 적합된 값 : fitted(model)
+# 3. 적합된 값
+# fitted(model) function
 # speed 값에 대해 모델에 의해 예측된 dist 값
 fitted(m)[1:4]
 
 # 4. 잔차: residual(model)
+# Y - YHat 의 값 
 # 잔차 : 선형 회귀 모델을 작성한 다음 다음 모델로부터의 구한 예측값과 실제 값 사이의 차이
-residuals(model)[1:4]
+residuals(m)
 fitted(m)[1:4] + residuals(m)[1:4] == cars$dist[1:4]
 
 # 5. 회귀 계수의 신뢰 구간: confint(model)
 # 단순 선형 회귀에서 절편과 speed의 기울기는 정규 분포를 따름
-# 따라서 t 분포를 사용한 신뢰구간을 confint(model)을 이용해 구할 수 있음ㄴ
+# 따라서 t 분포를 사용한 신뢰구간을 confint(model)을 이용해 구할 수 있음
 confint(m)
-
 
 # 6. 잔차 제곱 합 
 deviance(m)
@@ -161,7 +207,7 @@ matplot(speed, ys ,type = 'n')
 matlines(speed, ys, lty=c(1, 2, 2), col = 1) # lty 1은 직선, 2는 점선
 
 ##################### 
-## 3. 중 선형 회귀 ## 
+## 2. 중 선형 회귀 ## 
 #####################
 # 하나 이상의 독립변수가 사용된 선형회귀
 # 1. 모델 생성 및 평가
@@ -169,9 +215,9 @@ m <- lm(Sepal.Length ~ Sepal.Width + Petal.Length + Petal.Width, data = iris)
 summary(m)
 
 # 해석
-# 단순 선형 회귀와 거의 동일한데,
-# F 통계량의 가설이 조금 다름
-# 중선형 회귀는 모든 회귀 계수에 대해서 0이다 --> 귀무가설로 선정됨
+# 단순 선형 회귀와 거의 동일한데, F 통계량의 가설이 조금 다름
+# 귀무가설 : 모든 회귀 계수에 대해서 0이다 
+# 대립가설 : 모든 회귀 계수에 대해서 0이아님
 
 # 범주형 추가해서 계산하기
 # 범주형 변수는 dummy variable를 사용해 표현
@@ -269,7 +315,7 @@ m                <- lm(circumference ~ (fTree*age), data = Orange)
 anova(m)     
 
 ###############
-## 4. 이상치 ## 
+## 3. 이상치 ## 
 ###############
 # 이상치(Outlier)는 주어진 회귀 모델에 의해 잘 설명되지 않는 데이터 점들을 뜻함
 # 이상치 검출에서는 잔차, 외면 스튜던트화 잔차(Externally Studentized Residual)를 사용
@@ -281,17 +327,18 @@ anova(m)
 
 # 외면 스튜던트화 잔차
 rstudent(
-  model, # lm 또는 glm 함수가 반환한 모델 객체
+  model  # lm 또는 glm 함수가 반환한 모델 객체
 )
 # 본페로니 이상값 검정
-# 여러 가설 검정을 수행할 때 발생하는 다중 비교(Multiple Comparison) 문제를 해결한 p 값
+# 여러 가설 검정을 수행할 때 
+# 발생하는 다중 비교(Multiple Comparison) 문제를 해결한 p 값
 # 여러개의 가설 검정을 동시에 수행하면 귀무가설을 기각할 확률이 높아짐
 # 이를 다중 비교 문제라고 하는데, 본페로니 교정은 이를 해결한 p 값을 구함
 
 # t-test를 이용해 rstudent 값이 너무 크거나 작은 점을 찾으면 됨
 # -> 이를 간단하게 해주는 함수 outlierTest
 car::outlierTest(
-  model, # lm 또는 glm 객체 
+  model # lm 또는 glm 객체 
 ) 
 
 # Orange 데이터에 이상치를 직접 추가하고,
@@ -308,7 +355,7 @@ m <- lm(circumference ~ age + I(age^2), data = Orange)
 car::outlierTest(m) # 36번째 데이터에서 p가 0.05보다 작은 값이 나와 이상치로 검출됨
 
 #################
-## 5. 변수선택 ## 
+## 4. 변수선택 ## 
 #################
 
 # 변수 선택법
@@ -319,7 +366,8 @@ car::outlierTest(m) # 36번째 데이터에서 p가 0.05보다 작은 값이 나
 # - 변수 소거법: 모든 변수가 포함된 모델에서 기준 통계치에 가장 도움이 되지 않는 변수 제거
 # - 단계적 방법: 위의 두 단계를 복합적으로 조합한 방법
 
-# step function으로 수행 가능
+# 1. step function
+# 위의 3가지 방법을 적용 가능
 step(
   object, 
   # 탐색할 모델의 범위 지정
@@ -332,14 +380,22 @@ step(
 library(mlbench)
 data(BostonHousing)
 m  <- lm(medv ~ ., data = BostonHousing)
+
+# step 해석
+# AIC(아카이케 정보 기준)으로 모델의 품질을 평가하는 척도
+# AIC이 작을수록 좋은 모델
+# 결과화면에서 AIC가 작은 순서대로 정렬되어 있음. 즉 가장 상단에 위치하는 변수를 빼거나 더하면 가장 좋아짐 
+# 
+
 m2 <- step(m, direction = "both")
-formula(m2)
+formula(m2)                        # formula 함수를 통해 변수선택법 적용 후의 포뮬라 추출 가능
+predict(m2, newdata = ...)         # m2 object를 predict 함수를 통해 수행
 
 # AIC는 작을수록 더 좋은 모형!
 
-# 모든 경우에 대한 비교
-# N개의 설명 변수가 있을 때, 각 변수를 추가하거나 뺀 총 2N개의 회귀 모델을 만들고
-# 이를 모두 비교
+
+# 2. 모든 경우에 대한 비교
+# N개의 설명 변수가 있을 때, 각 변수를 추가하거나 뺀 총 2N개의 회귀 모델을 만들고 이를 모두 비교
 # leaps::regsubsets function
 leaps::regsubsets(
   x,    # 디자인 행렬 또는 모델 포뮬러
@@ -359,10 +415,23 @@ m <- leaps::regsubsets(medv ~., data = BostonHousing)
 # row num은 변수 포함 개수를 말하고,
 # *는 해당 변수 포함 개수에서 최적의 모델일 때 포함해야할 변수를 뜻함
 summary(m)
-
 summary(m)$bic    # BIC가 작을 수록 좋은 모델
 summary(m)$adjr2  # AIC가 클수록 좋은 모델
 
 # plot을 사용하면, 수정 결정 계수를 그려보면 각 변수가 선택되었을 때 수정 결정 계수를 좀 더 
 # 쉽게 알 수 있음
 plot(m, scale = "adjr2")
+
+########################
+## 6. 다중공선성 진단 ## 
+########################
+# 계수가 통계적으로 유의미하지 않다면 대처
+# 계수가 통계적으로 유의미하다면 VIF가 크더라도 특별히 대처할 필요없음
+# 변수들을 더하거나 빼서 새로운 변수를 만든다
+# (개념적으로나 이론적으로) 두 예측변수를 더하거나 빼더라도 문제가 없는 경우
+#    예) 남편의 수입과 아내의 수입이 서로 상관이 높다면, 두 개를 더해 가족 수입이라는 하나의 변수로 투입한다
+# 더하거나 빼기 어려운 경우는 변수를 모형에서 제거한다
+# 단, 변수를 제거하는 것은 자료의 다양성을 해치고, 분석하려던 가설이나 이론에 영향을 미칠 수 있기 때문에 가급적 자제
+car::vif(m)
+
+

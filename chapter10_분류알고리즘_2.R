@@ -37,12 +37,25 @@ d$Species <- droplevels(d$Species)
 m         <- glm(Species ~ ., data = d, family = 'binomial')
 
 # fitted를 통해 모델이 예측한 값을 알 수 있음
-f <- fitted(m)
-ifelse(f > 0.5, 1, 0) == as.numeric(d$Species) - 1
+b <- fitted(m)
+ifelse(b > 0.5, 1, 0) == as.numeric(d$Species) - 1
 
 
 # 새로운 데이터에 대한 예측
-predict(m, newdata = d[c(1, 10, 55),], type = 'response')
+pred.prob <- predict(m, newdata = d, type = 'response')
+pred.YHat <- ifelse(YHat > 0.5, 1, 0)
+Y         <- as.numeric(d$Species) - 1
+df.plot   <- data.frame(Y = Y, YHat = pred.YHat, YProb = pred.prob)
+
+# 로지스티 결과 시각화
+df.plot <- data.frame(Y = Y, YProb = YHat)
+vColor     <- c('darkblue', 'red')
+plot.Title <- "실적 vs 예측 분류"
+p <- ggplot(data = df.plot, aes(x = factor(Y), y = YProb, colour = factor(Y))) + geom_jitter(width = 0.2, size = 1.5, alpha = 0.4)
+p <- p + geom_hline(yintercept = 0.5, size = 1, linetype = 'dotted')
+p <- p + scale_colour_manual(values = vColor) 
+p <- p + labs(title = plot.Title, x = '실적', y = '확률')
+p
 
 #################################
 ## 02. 다항 로지스틱 회귀 모델 ## 
@@ -78,7 +91,7 @@ head(fitted(m))
 
 # 새로운 관측값에 대한 예측 수행시 predict 함수 사용
 predict(m, newdata = iris[c(1, 51, 101), ], type = 'class')
-predict(m, newdata = iris[c(1, 51, 101), ], type = 'prob')
+predict(m, newdata = iris, type = 'prob')
 
 
 #######################

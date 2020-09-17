@@ -64,7 +64,6 @@
 - 막대그래프
 - 산점도
 - headMap
-
 - 히스토그램
 - boxplot
 - 히트맵
@@ -95,16 +94,16 @@ JB_assemble.R
 - xgboost
 
 #### Common Model
-- 의사결정나무 모형   
-- 신경망 모형
+- 연관성 분석 : JB_correlation.R
 
 #### prediction Model
 - 회귀분석
-  - Linear 회귀분석   
+  - Linear 회귀분석  : chapter07_예측분석.R
+- 정규화회귀분석     : JB_glmnet.R
   - Ridge 회귀분석     
   - Lasso 회귀분석    
   - elastic 회귀분석  
-- 시계열 예측         
+- 시계열 예측        : JB_timeSeries.R         
 - SVM                 
 
 #### Classification Model

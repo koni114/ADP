@@ -80,12 +80,13 @@ ggplot(data = head(Cars93)) + geom_curve(aes(x    = rep(0, 6),
 # 1.2 geom_path function
 # 관찰 값들을 연결시켜 주는 함수
 # 즉, x축은 각 컬럼의 데이터 group, y축은 해당 컬럼의 값으로 구성되어 있고, 각 객체들의 값을 선으로 이어 보여주는 함수
+# --> 평행 좌표
 # Aesthetics
 #' @param : x     : x축, 필수
 #' @param : y     : y축, 필수
 #' @param : alpha : 투명도
 #' @param : colour : 색상
-#' @param : group : 선 연결시 그룹핑 해주고자 하는 그룹을 말함
+#' @param : group : 선 연결시 그룹핑 해주고자 하는 그룹을 말함(색깔 구분 group이 아님)
 #' @param : linetype : 선 타입
 #' @param : size : 선 크기(?)
 #' @param : lineend  : Line end style (round, butt, square).
@@ -131,11 +132,13 @@ ggplot(economics, aes(date, unemploy)) + geom_ribbon(aes(ymin = unemploy - 900, 
 # 2. Line segment(선분 그리기) #
 ################################
 # 공통 aesthetics : x, y, alpha, color, linetype, size
-# geom_abline(aes(intercept, slope)), geom_hline(aes(yintercept)), geom_vline(aes(xintercept))
+# geom_abline(aes(intercept, slope)) 일차 함수 직선
+# geom_hline(aes(yintercept))        수평선
+# geom_vline(aes(xintercept))        수직선
 # 일차 선분을 그래프 위에 그려주는 함수
 # * 앞에 geom_point 을 그리고, geom_abline을 그리려고 한다면? 
 ggplot(seals, aes(x = long, y = lat )) + geom_abline(aes(intercept = 0, slope = 1))
-ggplot(seals, aes(x = long, y = lat )) + geom_hline(aes(yintercept = lat))
+ggplot(seals, aes(x = long, y = lat )) + geom_hline(aes(yintercept = lat))            #- 하나의 직선이 아니라, 여러개 가능
 ggplot(seals, aes(x = long, y = lat )) + geom_vline(aes(xintercept = long))
 
 ################################
@@ -176,7 +179,8 @@ ggplot(mpg, aes(hwy)) + geom_area(stat = 'bin') # hwy도 약간 discrete 하면�
 ggplot(mpg, aes(hwy)) + geom_density(kernel = 'gaussian')
 
 # 3.3 geom_dotplot function
-# 연속형 데이터의 분포를 점 plot으로 표기해주는 그래프 함수 
+# 연속형 데이터의 분포 '구간'를 점 plot으로 표기해주는 그래프 함수 
+# 바둑돌들이 그래프 위에 올라와 있는 형태
 #' @param x
 #' @param y
 #' @param alpha
@@ -252,6 +256,8 @@ ggplot(data = Cars93) + geom_bar(aes(x = Man.trans.avail,
 #' @param size
 library(dplyr)
 ggplot(mpg, aes(cty, hwy)) + geom_label(aes(label = cty), nudge_x = 10, nudge_y = 10)
+
+# Species 그룹별 평균 막대 그래프에 label을 표시하고 싶을 때, 
 ggplot(data = (iris %>%  group_by(Species) %>%  summarise_all(list(~ mean(., na.rm = T)))),
        aes(x = Species, y = Sepal.Length, fill = Species)
        ) + geom_bar(stat =  'identity') + geom_label(mapping = aes(label = Sepal.Length), nudge_x = 0, nudge_y = -0.3, fill = 'white')
@@ -268,7 +274,8 @@ ggplot(mpg, aes(cty, hwy)) + geom_jitter(height = 2, width = 2)  # 점을 조금
 ggplot(mpg, aes(cty, hwy)) + geom_point()  
   
 # 5.4 geom_quantile function
-# 부드럽게 한 분위회귀분석 선을 표현하는 그래프 함수
+# 분위 회귀 분석 직선 3개를 그려줌
+# 분위회귀분석 --> ex) 분위수 별  
 ggplot(mpg, aes(cty, hwy)) + geom_quantile()  
 
 # 5.5 geom_rug function
@@ -282,6 +289,7 @@ ggplot(mpg, aes(cty, hwy)) + geom_point() + geom_smooth(method = lm)
 
 # 5.7 geom_text
 # 점, 막대 등에 text를 표기하는 그래프 함수(**중요) 
+# geom_label과 비슷한 역할 수행
 #' @param nudge_x, label의 x 축 조절
 #' @param nudge_y, label의 y 축 조절
 #' @param check_overlap, False인 경우, 라벨이 겹치는 경우 제거함
@@ -486,6 +494,8 @@ map   <- map_data("state")
 k     <- ggplot(data = data, aes(fill = murder)) 
 
 # 9.1 geom_map function
+#' @param map_id, map_data object 생성시 id
+#' @param map, map_data object
 # 지도위에 표기 해주는 그래프 함수
 k + geom_map(aes(map_id = state), map = map) + expand_limits(x = map$long, y = map$lat)
 
@@ -543,9 +553,283 @@ c + stat_count(width = 1)
 # ..count.., ..density.., ..scaled..
 c + stat_density(adjust = 1, kernel = "gaussian")
 
-##################
-### GGPLOT TIP ###
-##################
+####################################
+### 2. x continuous, y continous ###
+####################################
+# 2.1 stat_bin_2d 
+# x,y가 연속형 데이터에서, count를 추가한 그래프
+# x, y, fill --> ..count.., ..density..
+ggplot(mpg, aes(cty, hwy,fill = ..density..)) + stat_bin_2d(bins = 30, drop = T)
+ggplot(mpg, aes(cty, hwy,fill = ..count..)) + stat_bin_2d(bins = 30, drop = T)
+
+# 2.2 stat_bin_hex
+# x, y, fill -->  ..count.., ..density..
+ggplot(mpg, aes(cty, hwy,fill = ..density..)) + stat_bin_hex(bins=30)
+
+# 2.3 stat_density_2d
+# x, y, color, size | ..level..
+ggplot(mpg, aes(cty, hwy)) + stat_density_2d(contour = TRUE, n = 100)
+
+# 2.4 stat_ellipse
+ggplot(mpg, aes(cty, hwy)) + stat_ellipse(level = 0.95, segments = 51, type = "t")
+
+# 2.5 stat_ecdf
+# x, y -> ..x.., ..y..
+ggplot(mpg, aes(cty, hwy)) + stat_ecdf(n = 40)
+
+# 2.6 stat_quantile
+# x, y -> ..quantile..
+ggplot(mpg, aes(cty, hwy))  + stat_quantile(quantiles = c(0.1, 0.9), formula = y ~  log(x), method = "rq")
+
+# 2.7 stat_smooth
+# x, y | ..se.., ..x.., ..y.., ..ymin.., ..ymax..
+ggplot(mpg, aes(cty, hwy)) + stat_smooth(method = "lm", formula = y ~ x, se=T, level=0.95)
+               
+# 2.8 stat_function
+# 연속확률분포 곡선
+ggplot(data.frame(x=c(-3,3)), aes(x=x)) + stat_function(fun = dnorm, args = list(sd = 0.5))
+                      
+# 2.9 stat_identity
+ggplot(mpg, aes(cty, hwy)) + stat_identity(na.rm = TRUE)
+  
+# 2.10 stat_sum
+# x, y, size -> ..n.., ..prop..
+ggplot(mpg, aes(cty, hwy))  + stat_sum()
+
+# 2.11 stat_summary
+ggplot(mpg, aes(cty, hwy))  + stat_summary(fun.data = "mean_cl_boot")
+
+# 2.12 stat_summary_bin
+ggplot(diamonds, aes(carat, price)) + stat_summary_bin(fun = "mean", geom = "bar")
+
+# 2.13 stat_unique
+ggplot(mpg, aes(cty, hwy)) + stat_unique() + 
+
+
+##########################
+### 3. Three Variables ###
+##########################
+seals$z <- with(seals, sqrt(delta_long^2 + delta_lat^2)); l <- ggplot(seals, aes(long, lat))
+
+
+# 3.1 stat_contour
+# x, y, z, order -> ..level..
+l + stat_contour(aes(z = z))
+
+# 3.2 stat_summary_hex
+# x, y, z, fill -> ..value..
+l + stat_summary_hex(aes(z = z), bins = 30, fun = max)
+
+# 3.3 stat_summary_2d
+# x, y, z, fill -> ..value..
+l + stat_summary_2d(aes(z = z), bins = 30, fun = mean)
+
+###################################
+### 4. x discrete, y continuous ###
+###################################
+f <- ggplot(mpg, aes(class, hwy))
+
+# 3.4 stat_boxplot
+# x, y | ..lower.., ..middle.., ..upper.., ..width.. , ..ymin.., ..ymax..
+ggplot(mpg, aes(class, hwy)) + stat_boxplot(coef = 1.5)
+?stat_boxplot
+
+# 3.5 stat_ydensity
+# x, y | ..density.., ..scaled.., ..count.., ..n.., ..violinwidth.., ..width..
+ggplot(mpg, aes(class, hwy)) + stat_ydensity(kernel = "gaussian", scale = "area")
+
+#############
+### SCALE ###
+#############
+# Scale function은 데이터 값을 심미적으로 조정하는 역할 수행
+
+n <- ggplot(mpg, aes(fl)) + geom_bar(aes(fill = fl))
+
+# Format : A_B_C
+# A : 서두에 scale은 공통 
+# B ; alpha/color/colour/continuous/discrete/linetype/shape.. 등 심미적으로 조절하고자 하는 객체명 입력
+# C : manual, date, datetime..등   scale 하고자하는 동사(?) 입력
+
+# 1. scale_fill_manual function
+# fill 객체(막대, 면적 등..) 의 manual 을 수정하고자 하는 함수
+#' @param values
+#' @param limits
+#' @param breaks
+#' @param name
+#' @param labels
+n +  scale_fill_manual(
+  values = c("skyblue", "royalblue", "blue", "navy"),
+  limits = c("d", "e", "p", "r"), 
+  breaks = c("d", "e", "p", "r"),
+  name = "fuel", 
+  labels = c("D", "E", "P", "R"))
+
+##############################
+### General Purpose Scales ###
+##############################
+# 1. scale_*_continuous()
+# 연속형 값을 시각적으로 mapping 해주는 함수
+#' @param name, label의 명
+#' @param breaks, 축 간격
+#' @param labels, break 간격에 줄 label 명
+#' @param na.value, na 인 경우 처리하고자 하는 값
+#' @param limits, 축 min, max 
+#' @param trans, 함수를 적용해서 x 축 값을 변환할 수 있음. ex)  log2_trans()
+ggplot(mpg, aes(cty, hwy)) + geom_point()  + scale_x_continuous(name   = 'hello',
+                                                breaks = c(10, 15, 20, 25, 30),
+                                                labels = c('A', 'B', 'C' ,'D', 'E'),
+                                                limit = c(10, 30))
+                                               
+
+# 2. scale_*_discrete()
+# 이산형 값을 시각적으로 mapping 해주는 함수
+# 일반적으로 범주형 변수들의 순서를 limit 옵션을 통해 바꿔줌
+#' @param name, label의 명
+#' @param limits, 범주형 x 축의 순서 변경 
+ggplot(mpg, aes(fl)) + geom_bar() + scale_x_discrete(limit = c('d', 'e', 'p', 'r', 'c'))
+
+# 3. scale_*_identity()
+# scaling을 진행하지 않고, 있는 값 그대로 보여주고 싶을 때,
+ggplot(mtcars, aes(mpg, wt)) + geom_point(aes(size = cyl)) # 원의 size가 scaled 되서 적절한 사이즈로 변환
+ggplot(mtcars, aes(mpg, wt)) + geom_point(aes(size = cyl)) + scale_fill_identity() # 원의 size가 cyl 값 그대로 적용
+
+# 4. scale_*_manual()
+# scale_*_manual(values = c())
+# scale_fill_manual : 기존의 색상 위에 다른 색상을 입혀주는 함수 .
+# 따라서 기본적으로 색상이 입혀져 있어야 작동
+ggplot(mpg, aes(fl)) + geom_bar(aes(fill = fl)) + scale_fill_manual(values = c('red', 'blue', 'white', 'black', 'green'))
+
+# 5. scale_*_date(date_labels = "%m/%d")
+# 날짜형 데이터를 format에 따라 변환해주는 함수
+
+# 6. scale_*_datetime()
+# scale_*_date 함수와 동일한 역할을 하는 함수 
+
+##############################
+### X & Y Location Scales ####
+##############################
+# x,y 축 scale 변환 함수
+# 1. scale_x_log10 function
+# 밑이 10인 로그 변환
+ggplot(data = iris) + geom_point(aes(x = Sepal.Length, y = Petal.Length)) + scale_x_log10()
+
+# 2. scale_x_reverse function
+# 축 자체가 좌우 반전이 일어나게끔 해주는 함수
+ggplot(data = iris) + geom_point(aes(x = Sepal.Length, y = Petal.Length)) + scale_x_reverse()
+
+# 3. cale_x_sqrt function
+# 제곱근 변환 함수
+ggplot(data = iris) + geom_point(aes(x = Sepal.Length, y = Petal.Length)) + scale_x_sqrt()
+
+#########################################
+### COLOR AND FILL SCALES (DISCRETE) ####
+#########################################
+# color와 fill scale 변환 함수들
+# ** 중요한 것은 기존에 색깔이 있는 상태에서 추가하는 개념이므로,
+# default 색깔이 없는 상태에서는 적용 불가능
+o <- ggplot(mpg, aes(hwy)) + geom_dotplot(aes(fill = ..x.., color = ..x..))
+
+# 1. scale_fill_distiller 
+o + scale_fill_distiller(palette = "Blues")
+
+# 2. scale_fill_gradient
+o + scale_fill_gradient(low="red", high="yellow")
+
+# 3. scale_fill_gradient2
+o + scale_fill_gradient2(low="red", high="blue" ,mid = "white", midpoint = 25)
+
+# 4. scale_fill_gradientn
+o + scale_fill_gradientn(colours=topo.colors(2))
+
+##########################
+### Coordinate Systems ###
+##########################
+# 좌표 변환 함수들!
+# 1. coord_cartesian
+# x축, y축 범위 지정 함수 
+# 범주형인 경우에는 xlim(c(0, 5)) 면 6개의 공간으로 표현됨
+#' @param xlim, 
+#' @param ylim, 
+ggplot(mpg, aes(fl)) + geom_bar() + coord_cartesian(xlim = c(0, 5))
+
+# 2. coord_fixed
+# x, y축 비율 조정. 
+# 크게 좋진 않다.. 그래프 자체 크기가 조정되기 때문
+ggplot(mpg, aes(cty, hwy)) + geom_point() + coord_fixed(ratio = 0.5)
+ggplot(mpg, aes(cty, hwy)) + geom_point() + coord_fixed(ratio = 1)
+
+# 3. coord_flip
+# x축과 y축을 swap
+# 막대그래프 방향을 변경 시킬 수 있음
+ggplot(mpg, aes(cty, hwy)) + geom_point() + coord_flip()
+ggplot(mpg, aes(fl)) + geom_bar() + coord_flip()
+
+# 4. coord_polar
+# 원형 그래프 처럼 그려주는 함수
+ggplot(mpg, aes(fl)) + geom_bar() + coord_polar(theta = "x", direction=1)
+
+# 5. coord_trans
+# 값 자체가 변환 되는 것이 아니라, 그래프 축의 비율이 변화되는 것
+# scale transformation 함수랑은 다름!
+#' @param x, x축 변환 
+#' @param y, y축 변환
+#' @param xlim, x축 범위 
+#' @param ylim, y축 범위
+ggplot(mpg, aes(fl)) + geom_bar() + coord_trans(y = "sqrt")
+
+###########################
+### position adjustment ###
+###########################
+# 1. dodge 겹치지 않게 표현
+ggplot(mpg, aes(fl, fill = drv)) + geom_bar(position = "dodge") 
+
+# 2. fill 비율로 겹쳐서 그래프를 표현
+ggplot(mpg, aes(fl, fill = drv)) + geom_bar(position = "fill") 
+
+# 3. jitter 값을 조금씩 분산되서 표현하여 전부 보이도록 함
+ggplot(mpg, aes(cty, hwy)) + geom_point(position = 'jitter')
+
+# 4. nudge label이 값에서 조금 벗어날 수 있도록 함
+ggplot(mpg, aes(cty, hwy)) + geom_label(aes(label = drv), position = "nudge")
+
+# 5. stack, 쌓아서 그래프를 표현
+ggplot(mpg, aes(fl, fill = drv)) + geom_bar(position = "stack") 
+
+###########################
+### position adjustment ###
+###########################
+
+
+##############
+### Themes ###
+##############
+# 1. + theme_bw() : 흰색 바탕
+ggplot(mpg, aes(fl)) + geom_bar() + theme_bw()
+
+# 2. + theme_gray() : 회색 바탕
+ggplot(mpg, aes(fl)) + geom_bar() + theme_gray()
+
+# 3. + theme_dark() : 검은색 바탕
+ggplot(mpg, aes(fl)) + geom_bar() + theme_dark()
+
+# 4. 기타
+ggplot(mpg, aes(fl)) + geom_bar() + theme_classic()
+ggplot(mpg, aes(fl)) + geom_bar() + theme_light()
+ggplot(mpg, aes(fl)) + geom_bar() + theme_linedraw()
+ggplot(mpg, aes(fl)) + geom_bar() + theme_minimal()
+ggplot(mpg, aes(fl)) + geom_bar() + theme_void()
+
+################
+### Faceting ###
+################
+# 1. facet_grid
+#' @param free, x축, y축 모두 데이터 크기에 따라 자동 scale 조정
+ggplot(mpg, aes(cty, hwy)) + geom_point() + facet_grid(rows = vars(year), cols = vars(fl))
+
+# 2. facet_wrap
+ggplot(mpg, aes(cty, hwy)) + geom_point() + facet_wrap(vars(fl))
+
+  ggplot(mpg, aes(cty, hwy)) + geom_point() + facet_grid(cols = vars(fl), labeller = label_both)
 
 # 1. geom 함수를 여러 개 사용하고 싶은 경우, ggplot main function에 aes 를 적용해야 함
 # 막대 그래프 경우

@@ -1,13 +1,10 @@
-#' 데이터 불러오기
-#' 데이터 파일 불러오기 전, 선행되어야 할 것들
-#' - 인코딩은 정상적인가? EUC-KR, UTF-8 인지 확인 필요.
-#'     --> 문제 있는 경우, readr::read_csv function을 통해 locale parameter 이용
-
-#' - csv, excel 등 인 경우, 데이터의 크기가 작은 경우 실제 열어서 컬럼 등이 잘 setting 되어 있는지 확인 필요
-#' csv 인 경우              --> data.table::fread function
-#' excel, xlsx, xls 인 경우 --> readxl::read_xls  function
-#'                              readr::read_csv   function
-
+#####################
+## 데이터 불러오기 ##
+#####################
+# 01. csv 불러오기      : data.table::fread
+# 02. excel 불러오기    : read_excel
+#                         readxl::read_xls(encoding 문제 있을 경우 사용)
+# 03. tab, txt 불러오기 : read.table
 
 setwd("C:/ADP자료")
 
@@ -36,12 +33,13 @@ bh <- data.table::fread(  file   = "Boston_Housing.csv"
 
 # read_xls function이 xls loading중에 가장 빠르다고 알려져 있음
 library(readxl)
-rxls <- readxl::read_xls(  path  = "file_example_XLS_5000.xls" 
-                 , sheet = NULL
-                 , col_names = TRUE
-                 , col_types = NULL
-                 , na = c("NA", "NaN", "NULL", "\\N")
-                 )
+rxls <- readxl::read_xls(  
+  path  = "file_example_XLS_5000.xls"  
+, sheet = NULL
+, col_names = TRUE
+, col_types = NULL
+, na = c("NA", "NaN", "NULL", "\\N")
+)
 
 ## 3. encoding 문제 있을 경우, 적용 ----
 # readr::read_*(

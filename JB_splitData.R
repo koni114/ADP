@@ -1,4 +1,9 @@
-## 데이터 분할
+#################
+## 데이터 분할 ##
+#################
+# 01. 데이터프레임분할 : split function
+# 02. 문자열분할       : nchar(), substr(), paste0(), strsplit(), sub(), gsub()
+
 
 ## 1. split function
 ## split('분리할 데이터', ' 기준이 되는 컬럼 혹은 factor')
@@ -12,19 +17,18 @@ split(infert, list(infert$education, infert$case))
 ## 2. 문자열 분할
 ## nchar(), substr(), paste0(), strsplit(), sub(), gsub()
 
-## 2.1 nchar : 스칼라 각각의 문자열 길이 return, 
+## 2.1 문자열 길이 return : nchar function
 ##     이 때 공백 포함
 x <- c("Seoul", "New York", "London", "1234")
 nchar(x)
 
-## 2.2 substr(x, start, stop)
+## 2.2 문자열 slicing : substr(x, start, stop)
 substr(x, 1, 3)
 
 ## 2.3 strsplit : 문자형 벡터 x를 기준으로 나누기
 ##                return value는 list
 name       <- c("Chulsu, Kim", "Younghei, Lee", "Dongho, Choi")
 split_name <- strsplit(name, split = ',')
-
 
 ## 2.4 sub, gsub 를 이용하면 문자 대체 가능
 ## sub  : 최초 한번만,

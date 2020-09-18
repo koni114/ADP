@@ -1,7 +1,7 @@
 ## ADP 실기 대비 - R programming 준비
 
 ### Data preprocessing
-- 데이터 불러오기          : JB_LoadingData.R
+- 데이터 불러오기          : JB_LoadingData.R 
   - excel
   - csv
   - tab
@@ -40,7 +40,6 @@
   - min/max
   - 제거
 
-
 - 데이터 정렬                : JB_orderByData.R
 - 데이터 윈도우              : JB_windowData.R
 - 데이터 시프트              : JB_shiftData.R
@@ -49,15 +48,17 @@
   - 01 변환
   - scale 변환
 - 데이터 인코딩              : JB_encodingData.R
+
 ### EDA + Visualiztion
 - 자료 요약(통계)            : JB_summary.R 
   - 수치형
   - 문자형
   - 날짜형
   - 범주형
-- ggplot2 기본 기능 익히기   : JB_ggpplot2.R
+- ggplot2 기본 기능 익히기    : JB_ggpplot2.R
+- ggplot2 cheatsheet         : JB_ggplot_cheatsheet.R
 - 산점도                     : JB_ScatterPlot.R
-- 산점도 행렬                  
+- 산점도 행렬
 - Time Trend                 : JB_timeTrend.R
 - 파이차트                   : JB_pieChart.R
 - 밀도함수
@@ -99,7 +100,7 @@ JB_assemble.R
 #### prediction Model
 - 회귀분석
   - Linear 회귀분석  : chapter07_예측분석.R
-- 정규화회귀분석     : JB_glmnet.R
+- 정규화회귀분석      : JB_glmnet.R
   - Ridge 회귀분석     
   - Lasso 회귀분석    
   - elastic 회귀분석  
@@ -109,6 +110,9 @@ JB_assemble.R
 #### Classification Model
 - 로지스틱 회귀모형
 - SVM
+
+#### Text Mining
+- JB_textMining.R
 
 ### evaluation
 - 모델 평가 방법, 교차검증 : JB_evaluation.R 

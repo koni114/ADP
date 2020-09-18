@@ -1,9 +1,14 @@
-## 데이터 표준화
+###################
+## 데이터 표준화 ##
+###################
+
 ## https://adnoctum.tistory.com/184
 
 test <- sample(100)
 unlist()
-## 1. scale 변환 = 정규화변환
+##############################
+# 1. scale 변환 = 정규화변환 #
+##############################
 ## x - mean(x) / sd(x) 
 iris_std <- lapply(iris, function(x){
   if(is.numeric(x)){
@@ -13,9 +18,9 @@ iris_std <- lapply(iris, function(x){
   }
 }) %>% data.frame
 
-## 2. 01 변환
-
-
+###############
+# 2. 0-1 변환 #
+###############
 ## x - min(x) / max(x) - min(x)
 iris_01 <- lapply(iris, function(x){
   if(is.numeric(x)){

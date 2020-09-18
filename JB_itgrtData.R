@@ -1,4 +1,9 @@
-## 데이터 통합
+#################
+## 데이터 통합 ##
+#################
+# 01. 열결합 : dplyr::left_join(), dplyr::right_join(), dplyr::inner_join, dplyr::outer_join
+# 02. 행결합 : dplyr::bind_rows()
+
 test1 <- data.frame( class = c(1, 2, 3, 4, 5)
                     ,type1  = c(90, 80, 85, 40, 30))
 
@@ -6,7 +11,7 @@ test2 <- data.frame(class = c(1,2,3,4,6),
                     type2 = c(100, 200, 300, 400, 500))
 
 
-# 1. dplyr::left_join(), dplyr::right_join()
+# 1. dplyr::left_join(), dplyr::right_join(), dplyr::inner_join, dplyr::outer_join
 dplyr::left_join(test1 ,test2)
 dplyr::right_join(test1 ,test2)
 

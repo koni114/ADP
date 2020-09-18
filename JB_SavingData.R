@@ -10,3 +10,10 @@ write.table(
     , na        = c("NA")   # 결측인 경우 해당 문자열로 대체 가능
 )
 
+## RData로 저장
+# save( 저장할 데이터명, file = "저장 경로\\저장할 데이터의 파일명.RData" )
+save(
+  data, # 저장할 데이터 객체
+  file  # 저장 데이터 경로
+)
+

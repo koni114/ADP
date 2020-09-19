@@ -135,6 +135,7 @@ kings_arima1
 kings_fcast1 <- forecast(kings_arima1, h = 5)
 kings_fcast1
 
+plot(kings_fcast)
 plot(kings_fcast1)
 
 ############################################

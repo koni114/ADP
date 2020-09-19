@@ -10,10 +10,10 @@
 
 ###—————————————————————————–
 ### Corpus 생성
-
-library(tm)
+# tm에서 문서의 집합은 Corpus
+require(tm)
 lines <- readLines("review.txt")
-lines <- head(lines, 100)
+# lines <- head(lines, 100)
 doc   <- tm::Corpus(VectorSource(lines))
 
 lines <- c("You're awe some and I love you", 
@@ -44,14 +44,13 @@ inspect(doc[1])                         #— 첫번째 문서 조회
 #writeCorpus(doc)                        #— Corpus 저장
 #writeCorpus(doc[1], filenames="01.txt") #— 첫번째 Corpus 저장
 
-
 ###—————————————————————————–
 ### Corpus 변환
 (doc <- tm_map(doc, as.PlainTextDocument))[[1]]                #— XML 문서를 Text로 변환
 (doc <- tm_map(doc, stripWhitespace))[[1]]                     #— 두개 이상의 공백을 하나의 공백으로 치환
 (doc <- tm_map(doc, tolower))[[1]]                             #— 소문자로 변환
 (doc <- tm_map(doc, removePunctuation))[[1]]                   #— 구두점 삭제
-(doc <- tm_map(doc, removeWords, stopwords("english")))[[1]]   #— Stopword (조사, 띄어쓰기, 시제 등)를 제거하고 표준화
+(doc <- tm_map(doc, removeWords, stopwords("en")))[[1]]   #— Stopword (조사, 띄어쓰기, 시제 등)를 제거하고 표준화
 (doc <- tm_map(doc, stripWhitespace))[[1]]                     #— 두개 이상의 공백을 하나의 공백으로 치환
 (doc <- tm_map(doc, stemDocument))[[1]]                        #— 어근만 추출
 # (doc1 <- tm_map(doc, removeNumbers))[[1]]                       #— 숫자 삭제
@@ -60,10 +59,12 @@ inspect(doc[1])                         #— 첫번째 문서 조회
 #rm(removeURL)
 #(doc <- tm_map(doc, gsub, pattern = "diamond", replacement = "aaa"))[[1]]   #— 문자열 치환
 #(doc <- tm_map(doc, stemCompletion, dictionary = doc))[[1]]                 #— 어근으로 원래 단어 유추
-test <- inspect(doc)
+# test <- inspect(doc)
 
 ###—————————————————————————–
 ### DocumentTermMatrix / TermDocumentMatrix
+# DocumentTermMatrix : 문서를 행, 단어를 열로 표현
+# TermDocumentMatrix : 
 #— Non-/sparse entries : 단어가 있는 entry / 단어가 없는 entry
 (m <- DocumentTermMatrix(doc))          #— DocumentTermMatrix 생성
 
@@ -72,10 +73,10 @@ dic <- c("prices", "crude", "oil")      #— 여기 기술된 단어를 포함�
 
 (m <- TermDocumentMatrix(doc))          #— TermDocumentMatrix 생성
 (m <- t(m))                             #— DocumentTermMatrix로 변환
-(data <- as.matrix(m))                  #— DocumentTermMatrix를 matrix로 변환
+data <- as.matrix(m)                    #— DocumentTermMatrix를 matrix로 변환
 
-m$nrow                                  #— 문서 (document) 개수 / 단어 (term) 개수
-m$ncol                                  #— 단어 (term) 개수 / 문서 (document) 개수
+m$nrow                                  #— 단어 (term) 개수
+m$ncol                                  #— 문서 (document) 개수
 m$dimnames                              #— 문서 (document)와 단어 (term) 목록
 m$dimnames$Docs
 m$dimnames$Terms
@@ -87,11 +88,11 @@ inspect(m[1:2, 3:5])                    #— 처음 2개 문서의 3번째에서
 
 findFreqTerms(m, 3)                     #— 3회 이상 사용된 단어 표시
 findFreqTerms(m, 10, 15)                #— 10회 이상, 15회 이하 사용된 단어 표시
-findAssocs(m, "oil", 0.65)              #— "oil" 단어와 연관성(같이 사용될 확률)이 65% 이상이 단어를 표시
+findAssocs(m, "영화", 0.65)             #— "재미" 단어와 연관성(같이 사용될 확률)이 65% 이상이 단어를 표시
 rm(dic)
 
 (frequency <- colSums(data))            #— 단어별 발생 건수 계산
-(frequency <- subset(frequency, frequency >= 5))   #— 3건 이상 발생한 단어 추출
+(frequency <- subset(frequency, frequency >= 15))   #— 15건 이상 발생한 단어 추출
 
 # library(gdata)
 frequency <- as.data.frame(available.packages())   #— 패키지 목록 추출
@@ -100,7 +101,9 @@ frequency <- gsub('[ \(].*|\n', '', frequency) #— 다양한 문자 부호 제�
 frequency <- table(frequency)                  #— 단어의 빈도수 테이블
 
 library(ggplot2)
-barplot(frequency, las = 2)
+# frequency <- data.frame(word = names(frequency), frequency = frequency)
+# ggplot(data = frequency) + geom_col(aes(x = word, y = frequency)) 
+barplot(frequency[order(frequency, decreasing = T)], las = 2)
 
 library(wordcloud) #— 워드 클라우드
 wordcloud(names(frequency), as.numeric(frequency), colors = c("green", "red"))
@@ -195,7 +198,7 @@ system.time(nouns <- sapply(head(lines, 1000), extractNoun, USE.NAMES = FALSE))
 }))
 
 (names(data) <- paste("Tr", 1:length(data), sep = ""))   #— 데이터에 행 이름 지정
-data
+head(data)
 
 library(arules)
 (data <- as(data, "transactions"))

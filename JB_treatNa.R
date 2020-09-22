@@ -54,7 +54,7 @@ titanic_treatMean <- titanic %>% mutate_all(~ifelse(is.na(.x), median(.x, na.rm 
 # 04. library 함수를 사용한 결측치 제거 #
 #########################################
 
-# 4.1 DMwR::centrallnputation
+# 4.1 DMwR::centralImputation
 # NA를 가운데 값으로 대체
 # 숫자의 경우 중앙값, 팩터의 경우 최빈값
 library(DMwR)

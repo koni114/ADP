@@ -2,6 +2,9 @@
 ## caret package ##
 ###################
 
+
+
+
 ########################
 # 2. 모델 옵션 setting #
 ########################
@@ -10,13 +13,14 @@
 # caret::trainControl 
 caret::trainControl(
   # 데이터 샘플링 종류 선택 가능
-  # none       : 데이터 샘플링 안함
-  # boot       : 부트스트래핑
+  # none       : 데이터 샘플링 안함  # boot       : 부트스트래핑
   # boot632    : 부트스트래핑 개선된 버전
   # cv         : 교차 검증
   # repeatedcv : 교차 검증의 반복
   # LOOCV      : Leave One Out  Cross validation(한개의 데이터로만 테스트하고, 나머지 데이터를 훈련 데이터로 하는 방법)
   method = 'boot',
+  # random, grid 방식 중 하나 선택. method = 'none' 경우는 제외
+  search,
   # 교차 검증을 몇 겹으로 할 것인가? 부트스트래핑을 몇 번 수행 할 것인가?
   # ex) k-fold에서 k의 수
   number, 
@@ -25,6 +29,7 @@ caret::trainControl(
   classProbs,  #  이진 분류 시, ROC 넓이 값 등 계산 필요시 True 지정
   p = 0.75     #  LGOCV에서 training Dataset의 percentag를 말함
 )
+
 
 # expand.grid function
 # hyper parameter setting 시 사용하는 함수.
@@ -59,6 +64,8 @@ modelResult <- caret::train(
   # 회귀 : RMSE, Rsquared, MAE 등
   # 분류 : Accuracy, Kappa, ROC,  
   metric,
+  # na 처리 여부 선택, na 제거 할 경우 = na.omit 할당
+  na.action = na.omit,
   trControl = trainControl(), # 훈련 파라미터
   # grid search 시 특정 개수만큼 random하게 값을 setting : tuneLength
   # grid search 시 직접 값을 셋팅 : tuneGrid. expand.grid function 사용

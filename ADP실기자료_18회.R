@@ -24,7 +24,7 @@
 # 2. 등급이 높아질수록 amount 값은 커짐
 # 3. 등급이 높아질수록 duration 값도 커짐
 # 각 등급별로 2000개의 row data 를 생성하여 임의의 데이터를 만들어 보겠다.
-
+library(dplyr)
 library(foreach)
 grade    <- c(1, 2, 3, 4, 5)
 amountOfCsm <- c(1000, 2000, 3000, 4000, 5000)
@@ -35,16 +35,17 @@ df <- foreach(i = 1:5, .combine='rbind') %do% {
   grade1 <- data.frame(  
     grade    = rep(grade[i], amountOfCsm[i]),
     duration = round(rnorm(amountOfCsm[i], duration[i], 1), 0),   
-    count    = round(rnorm(amountOfCsm[i], count[i],    2), 0),
+    count    = round(rnorm(amountOfCsm[i], count[i],    1), 0),
     amount   = round(rnorm(amountOfCsm[i], amount[i],   2), 0)
   )
   grade1
 }
 
-df <- df %>% mutate(grade = as.factor(grade))
+df <- df %>% mutate_all(., function(x) ifelse(x <= 0, 1, x))
 
 # 1.1 탐색적 데이터 분석(EDA), 결측치 처리 등 수행하고 시각화를 통해 데이터를 파악하시오(10점)
 # 1.1.1 amount, duration, count는 모두 수치형 데이터 이므로, 각 컬럼별 평균, 중앙값, 분위수, 첨도 왜도를 구해보자
+
 library(dplyr);library(timeDate)
 summary <- df %>% summarise_all(list(mean   = ~ mean(., na.rm = T),
                                      median = ~ median(., na.rm = T),
@@ -75,6 +76,7 @@ df <- DMwR::centralImputation(df)
 # 등급별로 총 물품의 평균치가 확실히 차이가 나는 것으로 보아 고객의 등급을 판정하는 모델을 생성할 때, 해당 독립변수를 추가한다면
 # 좋은 모델을 생성할 수 있을 것이라 판단된다.
 library(ggplot2)
+df <- df %>% mutate(grade = as.factor(grade))
 df_ctByGrd <- df %>% group_by(grade) %>% summarise(meanCount = mean(count, na.rm = T ))
 ggplot(data = df_ctByGrd, aes(x = grade, y = meanCount, fill = grade)) + geom_col() + geom_label(aes(label = round(meanCount, 4)),
                                                                                                  nudge_x = 0, nudge_y = 0, fill = 'white')
@@ -86,6 +88,7 @@ ggplot(data = df_ctByGrd, aes(x = grade, y = meanCount, fill = grade)) + geom_co
 # 2.1 durationGrd   : 최종 경과일로 부터 기간(duration)을 통해, 핵심 고객, 충성 고객, 잠재 고객, 이탈 고객으로 크게 4등급으로 구분 짓는 파생변수 생성
 # 2.2 amtPerCnt     : 물품 당 평균 금액(amount / count) 파생변수 생성
 # 2.3 customerGrd   : 물품 당 평균 금액을 기준으로,  고가 구매 고객/중가 구매 고객/저가 구매 고객 3등급으로 구분 짓는 파생변수 생성
+
 
 df_deriv <- df %>% mutate(
   durationGrd = case_when(
@@ -99,6 +102,9 @@ df_deriv <- df %>% mutate(
                                      amtPerCnt <= quantile(amtPerCnt, 0.3) ~ "3", 
                                      TRUE ~ "2"))
 
+df_deriv <- df_deriv %>% mutate_if(is.character, as.factor)
+summary(df_deriv)
+
 # 3. 전체 데이터를 70% : 30%로 분류하여 train Data / test Data 로 구분하고,
 # clustering SOM을 train Data를 사용하여 군집 모델을 생성 및 test Data를 통해 결과를 confusion Matrix 생성(10점)
 
@@ -106,10 +112,75 @@ df_deriv <- df %>% mutate(
 # 등급별 데이터의 수가 불균형 하므로(1등급의 고객 수는 적고, 5등급의 고객 수는 많음), 등급별 층별 샘플링을 통해 비율을 맞춤
 set.seed(123)
 train_idx <- caret::createDataPartition(df_deriv[, "grade"], p = 0.7, list = F)
-trainData <-df_deriv[train_idx, ]
-testData <-df_deriv[-train_idx, ]
+trainData <- df_deriv[train_idx,  ]
+testData  <- df_deriv[-train_idx, ]
+
 
 # 3.2 SOM 분석 수행
+# 기존 원천 데이터 중 수치형 데이터 duration, count, amount를 가지고 SOM 분석을 수행하도록 하겠다. 
+library(kohonen)
+num_col <- c('duration', 'count', 'amount')
+trainData.sc <- scale(trainData[num_col])
+testData.sc  <- scale(testData[num_col],
+                      center = attr(trainData.sc,"scaled:center"), 
+                      scale  = attr(trainData.sc, "scaled:scale"))
+
+SOM_model <- xyf(trainData.sc, 
+                classvec2classmat(trainData$grade),           #-  classvec2classmat : one-hot encoding 해주는 function
+                grid       = somgrid(13, 13, "hexagonal"),    #-  grid : 13 x 13, hexagonal
+                rlen       = 100                              #-  rlen : 100  
+                )             
+
+pos.prediction <- predict(SOM_model, newdata = testData.sc,  whatmap = 1)
+table(testData$grade, pos.prediction$prediction[[2]])    
+
+# 4. 랜덤 포레스트, 다층 신경망을 포함하여 4가지 방법으로 예측 후, 결과 지표를 F1-score를 통하여 제시하라.
+#    동시에 ROC Curve 를 통하여 시각화하고, 설명하라(10점)
+#    (가장 좋은 모델을 선택하고, 성능 튜닝 결과까지 포함)
+
+# caret package를 이용하여, randomForest, Neural Networks, XGBoost, SVM 모델 생성 및 예측 수행
+library(caret)
+colnames(trainData)
+
+# 0. 공통 변수 생성
+f = formula(grade ~ duration  + count + amount + durationGrd + amtPerCnt + customerGrd)
+
+# 1. randomForest 생성
+modelResult <- train(
+    f,
+    data        = trainData,
+    method      = 'rf',
+    metrics     = 'Accuracy',
+    trControl   =  caret::trainControl(method = 'none')
+  )
+  
+YHat <- predict.train( 
+    object  = modelResult,    #- caret model 객체
+    newdata = testData,       #- 예측하고자 하는 data 
+    type    = c('raw')        #- 예측 타입 
+  )
+  
+result <- caret::confusionMatrix(
+    YHat,
+    testData$grade,
+    mode = "prec_recall"
+  )
+
+library(pROC)
+ROCR::prediction(
+  YHat,                  # 예측 값
+  testData$grade         # 실제 값
+)
+
+auc <- pROC::multiclass.roc(
+  as.ordered(YHat),                  # 예측 값
+  as.ordered(testData$grade),         # 실제 값
+  levels = c(1, 2, 3, 4, 5)
+)
+
+
+
+
 
 
 
